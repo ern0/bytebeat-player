@@ -4,12 +4,11 @@
 #include <SDL2/SDL_audio.h>
 
 
-const int FREQ = 4000;
-const int VOLUME_MUL = 50;
+	typedef uint32_t u32;
+	typedef uint16_t u16;
+	typedef uint8_t u8;
 
-
-	uint32_t audioSample = 0;
-	
+	uint32_t audioSample = 0;	
 	void audioCallback(void* userdata,unsigned char* stream,int len);
 	uint32_t byteBeat(uint32_t sample);
 	uint32_t divnz(uint32_t a,uint32_t b);
@@ -78,17 +77,3 @@ const int VOLUME_MUL = 50;
 		if (b == 0) return 0;
 		return a % b;
 	} // modnz()
-
-
-	uint32_t byteBeat(uint32_t t) {
-
-		uint32_t drum = divnz(3300,modnz(t,2000)) * 17;
-
-		uint32_t bassline = ( modnz(t,2000*4) < (2000*1.2) ? t*4 : 0 );
-
-		uint32_t tunfm = (t*4) | ( 4*t * (( divnz(t,2000*8) & 3) + 5) );
-		uint32_t tune = ( modnz(t,2000) > (2000*0.55) ? tunfm : 0 ); 
-
-		return drum | bassline | tune;
-
-	} // byteBeat()
