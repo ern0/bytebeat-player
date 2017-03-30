@@ -6,7 +6,10 @@
 const int FREQ = 44100;
 
 
-	void audioCallback(void* userdata,Uint8* stream,int len);
+	uint32_t audioSample = 0;
+	
+	void audioCallback(void* userdata,unsigned char* stream,int len);
+	uint8_t byteBeat(uint32_t sample);
 
 
 	int main(int argc,char* argv[]) {
@@ -23,6 +26,7 @@ const int FREQ = 44100;
 		want.channels = 1;
 		want.samples = 4096;
 		want.callback = audioCallback;
+		want.userdata = (void*)&audioSample;
 		dev = SDL_OpenAudioDevice(NULL,0,&want,&have,0);
 
 		if (dev == 0) {
@@ -31,13 +35,31 @@ const int FREQ = 44100;
 		}
 
 		SDL_PauseAudioDevice(dev,0);
-		SDL_Delay(1000);
+		fprintf(stderr,"beep... ");
+		SDL_Delay(400);
+		fprintf(stderr,"\n");
 		SDL_CloseAudioDevice(dev);
 
 		return 0;
 	} // main()
 
 
-	void audioCallback(void* userdata,Uint8* stream,int len) {
+	void audioCallback(void* userdata,unsigned char* stream,int len) {
+		uint32_t* samplePtr = (uint32_t*)userdata;
+
+		for (int i = 0; i < len; i++) {
+
+			uint32_t sample = *samplePtr;
+			stream[i] = byteBeat(sample);
+			(*samplePtr)++;
+
+		} // for stream
 
 	} // audioCallback()
+
+
+	uint8_t byteBeat(uint32_t t) {
+
+
+		return t;
+	} // byteBeat()
