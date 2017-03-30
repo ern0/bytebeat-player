@@ -67,13 +67,13 @@
 	} // audioCallback()
 
 
-	uint32_t divnz(uint32_t a,uint32_t b) {
-		if (b == 0) return 0;
+	inline uint32_t divnz(uint32_t a,uint32_t b) {
+		if (b == 0) return a;
 		return a / b;
 	} // divnz()
 
 
-	uint32_t modnz(uint32_t a,uint32_t b) {
-		if (b == 0) return 0;
+	inline uint32_t modnz(uint32_t a,uint32_t b) {
+		if (b == 0) return a;
 		return a % b;
 	} // modnz()
