@@ -4,12 +4,13 @@
 
 
 const int FREQ = 44100;
+const int VOLUME_MUL = 30;
 
 
 	uint32_t audioSample = 0;
 	
 	void audioCallback(void* userdata,unsigned char* stream,int len);
-	uint8_t byteBeat(uint32_t sample);
+	uint32_t byteBeat(uint32_t sample);
 
 
 	int main(int argc,char* argv[]) {
@@ -22,7 +23,7 @@ const int FREQ = 44100;
 
 		SDL_zero(want);
 		want.freq = FREQ;
-		want.format = AUDIO_U8;
+		want.format = AUDIO_S16SYS;
 		want.channels = 1;
 		want.samples = 4096;
 		want.callback = audioCallback;
@@ -47,10 +48,14 @@ const int FREQ = 44100;
 	void audioCallback(void* userdata,unsigned char* stream,int len) {
 		uint32_t* samplePtr = (uint32_t*)userdata;
 
-		for (int i = 0; i < len; i++) {
+		for (int i = 0; i < len; i += 2) {
 
 			uint32_t sample = *samplePtr;
-			stream[i] = byteBeat(sample);
+			uint32_t result = byteBeat(sample) & 0xFF;
+
+			uint32_t* store = (uint32_t*)&stream[i];
+			*store = result * VOLUME_MUL;
+
 			(*samplePtr)++;
 
 		} // for stream
@@ -58,7 +63,7 @@ const int FREQ = 44100;
 	} // audioCallback()
 
 
-	uint8_t byteBeat(uint32_t t) {
+	uint32_t byteBeat(uint32_t t) {
 
 
 		return t;
