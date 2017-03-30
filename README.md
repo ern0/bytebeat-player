@@ -2,7 +2,8 @@
 
 Bytebeat player, using SDL2.
 
-Now playing my "simple house" formula @ 4000 Hz (8000 Hz divided by 2, it was necessary because the JS player's minimum frequency is 8 kHz).
+Now playing my "simple house" formula @ 4000 Hz.
+
 
 ````
 /*********************************/(0*(h = t/2)
@@ -28,3 +29,4 @@ Now playing my "simple house" formula @ 4000 Hz (8000 Hz divided by 2, it was ne
 
 )
 ````
+(In this code, 8000 Hz is divided by 2, it was necessary because the JS player's minimum frequency is 8 kHz).
