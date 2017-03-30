@@ -1,9 +1,10 @@
 #include <stdio.h>
+#include <stdint.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_audio.h>
 
 
-const int FREQ = 8000;
+const int FREQ = 4000;
 const int VOLUME_MUL = 50;
 
 
@@ -24,7 +25,7 @@ const int VOLUME_MUL = 50;
 		SDL_Init(SDL_INIT_AUDIO);
 
 		SDL_zero(want);
-		want.freq = FREQ;
+		want.freq = 44100;
 		want.format = AUDIO_S16SYS;
 		want.channels = 1;
 		want.samples = 4096;
@@ -37,14 +38,14 @@ const int VOLUME_MUL = 50;
 	    return 2;
 		}
 
-		SDL_PauseAudioDevice(dev,0);
 		fprintf(stderr,"playing... ");
-		SDL_Delay(30000);
+		SDL_PauseAudioDevice(dev,0);
+		SDL_Delay(55000);
+
 		fprintf(stderr,"\n");
-		exit(0);
-		
-		// was:
+		SDL_PauseAudioDevice(dev,1);
 		SDL_CloseAudioDevice(dev);
+
 		return 0;
 	} // main()
 
@@ -54,10 +55,10 @@ const int VOLUME_MUL = 50;
 
 		for (int i = 0; i < len; i += 2) {
 
-			uint32_t sample = *samplePtr;
+			uint32_t sample = *samplePtr / (44100 / FREQ);
 			uint32_t result = byteBeat(sample) & 0xFF;
 
-			uint32_t* store = (uint32_t*)&stream[i];
+			uint16_t* store = (uint16_t*)&stream[i];
 			*store = result * VOLUME_MUL;
 
 			(*samplePtr)++;
@@ -80,15 +81,13 @@ const int VOLUME_MUL = 50;
 
 
 	uint32_t byteBeat(uint32_t t) {
- 
-		uint32_t h = t / 2;
 
-		uint32_t drum = divnz(3300,modnz(h,2000)) * 17;
+		uint32_t drum = divnz(3300,modnz(t,2000)) * 17;
 
-		uint32_t bassline = ( modnz(h,2000*4) < (2000*1.2) ? h*4 : 0 );
+		uint32_t bassline = ( modnz(t,2000*4) < (2000*1.2) ? t*4 : 0 );
 
-		uint32_t tunfm = (h*4) | ( 4*h * (( divnz(t,2000*8) & 3) + 5) );
-		uint32_t tune = ( modnz(h,2000) > (2000*0.55) ? tunfm : 0 ); 
+		uint32_t tunfm = (t*4) | ( 4*t * (( divnz(t,2000*8) & 3) + 5) );
+		uint32_t tune = ( modnz(t,2000) > (2000*0.55) ? tunfm : 0 ); 
 
 		return drum | bassline | tune;
 
