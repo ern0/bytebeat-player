@@ -9,6 +9,8 @@
 	typedef uint8_t u8;
 
 	uint32_t audioSample = 0;	
+	uint32_t lastSample = 0;
+	uint32_t lastResult = 0;
 	void audioCallback(void* userdata,unsigned char* stream,int len);
 	uint32_t byteBeat(uint32_t sample);
 	uint32_t divnz(uint32_t a,uint32_t b);
@@ -55,10 +57,18 @@
 		for (int i = 0; i < len; i += 2) {
 
 			uint32_t sample = *samplePtr / (44100 / FREQ);
-			uint32_t result = byteBeat(sample) & 0xFF;
+			uint32_t result;
+
+			if (sample == lastSample) {
+				result = lastResult;
+			} else {
+				result = ( byteBeat(sample) & 0xFF ) * VOLUME_MUL;
+				lastSample = sample;
+				lastResult = result;
+			}
 
 			uint16_t* store = (uint16_t*)&stream[i];
-			*store = result * VOLUME_MUL;
+			*store = result;
 
 			(*samplePtr)++;
 
