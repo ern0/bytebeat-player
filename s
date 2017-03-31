@@ -1,4 +1,4 @@
 #/bin/bash
 
 #bin/minimal
-bin/0003-*
+bin/0005-*
