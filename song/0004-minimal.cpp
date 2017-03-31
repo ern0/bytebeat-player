@@ -6,7 +6,7 @@ u32 byteBeat(u32 t) {
 
 	u32 tempo = 0x0440;
 
-	u32 beat = t & 0x07ff;
+	u32 beat = t & 0x07ff;	
 	beat = beat | 1;
 
 	u32 drum = tempo / beat;
