@@ -1,4 +1,3 @@
 #/bin/bash
 
-#bin/minimal
-bin/0005-*
+bin/simple_house
